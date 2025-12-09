@@ -14,12 +14,12 @@ The plugin consists of a custom `ToolParser` implementation that detects and par
 
 ## Tool Call Format
 
-The parser expects the model to output tool calls in the following XML format:
+The parser expects the model to output tool calls in the following XML format(current mcp server format):
 
 ```xml
 <use_mcp_tool>
     <server_name>default</server_name>
-    <tool_name>get_weather</tool_name>
+    <tool_name>server_name[SEP]tool_name</tool_name>
     <arguments>
     {
         "city": "Beijing",
