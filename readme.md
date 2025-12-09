@@ -28,7 +28,7 @@ You can use either the self-hosted version or the [web application](https://lobe
 
 ### Step 1: Access Settings
 
-Navigate to **Settings** -> **Language Model** to add a custom AI service provider.
+Navigate to **Settings** -> **AI Service Provider** to add a custom AI service provider.
 
 ![Settings Navigation](img/settings.png)
 
@@ -47,7 +47,7 @@ Click the `+` button to add a new provider and configure it as follows:
 
 ### Step 3: Configure the Model
 
-After adding the provider, go to the model list section for that provider:
+After adding the provider, add the models you deploy to the service provider's model list.:
 
 1. Add a new model with the ID `mirothinker` (must match `--served-model-name`).
 2. **Crucial**: Enable the **Function Calling** capability toggle.
