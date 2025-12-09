@@ -1,5 +1,5 @@
 """
-Tool parser plugin for vLLM 0.11.0 for MiroThinker MCP format to compatible with the tool calling interface of openai.
+Tool parser plugin for vLLM for MiroThinker MCP format to compatible with the tool calling interface of openai.
 MCP format:
     <use_mcp_tool>
         <server_name>server name</server_name>
