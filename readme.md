@@ -1,68 +1,62 @@
-# MiroThinker Tool Parser Plugin for vLLM
+# LobeChat Integration Guide
 
-This plugin provides support for MiroThinker-style tool calling in vLLM. It allows models trained with the MiroThinker tool calling format (XML-based) to be served via vLLM's OpenAI-compatible API with proper tool parsing.
+This guide describes how to integrate the MiroThinker model with [LobeChat](https://github.com/lobehub/lobe-chat), an open-source, modern LLM UI framework supporting tool usage (function calling).
 
-## Overview
+## 1. Start the Inference Service
 
-The plugin consists of a custom `ToolParser` implementation that detects and parses XML tags in the model's output, converting them into standard OpenAI tool calls. It supports both streaming and non-streaming responses.
-
-## Files
-
-- **`MirothinkerToolParser_vllm_0.11.0.py`**: The Python implementation of the tool parser. It registers the parser name `mirothinker` with vLLM's `ToolParserManager`.
-- **`chat_template.jinja`**: A Jinja2 chat template that correctly formats the conversation history and injects tool definitions for the model.
-- **`serve_model_vllm.sh`**: An example shell script demonstrating how to launch vLLM with this plugin.
-
-## Tool Call Format
-
-The parser expects the model to output tool calls in the following XML format(current mcp server format):
-
-```xml
-<use_mcp_tool>
-    <server_name>default</server_name>
-    <tool_name>server_name[SEP]tool_name</tool_name>
-    <arguments>
-    {
-        "city": "Beijing",
-        "unit": "celsius"
-    }
-    </arguments>
-</use_mcp_tool>
-```
-
-The parser handles:
-- Extraction of server name, tool name, and JSON arguments.
-- Robust parsing of streaming output (partial tags).
-- Auto-resolution of tool names if the `server_name` matches a prefix of available tools.
-
-## Usage
-
-To use this plugin with vLLM, you need to specify the plugin path, the parser name, and the chat template when starting the server.
-
-### Command Line Arguments
-
-- `--tool-parser-plugin /path/to/MirothinkerToolParser_vllm_0.11.0.py`: Loads the custom parser code.
-- `--tool-call-parser mirothinker`: Activates the parser registered as `mirothinker`.
-- `--chat-template /path/to/chat_template.jinja`: Uses the provided chat template.
-- `--enable-auto-tool-choice`: Enables automatic tool choice handling.
-- `--enable-log-requests and --enable-log-outputs `: Enable vllm log the input and output of model [pr](https://github.com/vllm-project/vllm/pull/20707)
-
-### Example
-
-See `serve_model_vllm.sh` for a complete example:
+First, launch the MiroThinker model using vLLM with the OpenAI-compatible API adapter. Ensure you include the tool parser plugin.
 
 ```bash
-vllm serve /path/to/model \
+# Configuration
+PORT=61002
+MODEL_PATH=miromind-ai/MiroThinker-v1.0-30B
+
+# Start vLLM server
+vllm serve $MODEL_PATH \
     --served-model-name mirothinker \
-    --port 8000 \
+    --port $PORT \
     --trust-remote-code \
-    --chat-template ./chat_template.jinja \
-    --tool-parser-plugin ./MirothinkerToolParser_vllm_0.11.0.py \
+    --chat-template chat_template.jinja \
+    --tool-parser-plugin MirothinkerToolParser_vllm_0.11.0.py \
     --tool-call-parser mirothinker \
-    --enable-auto-tool-choice \
-    --max-model-len 32768
+    --enable-auto-tool-choice
 ```
 
-## Requirements
+## 2. Configure LobeChat
 
-- vLLM == 0.11.0
+You can use either the self-hosted version or the [web application](https://lobechat.com/chat).
 
+### Step 1: Access Settings
+
+Navigate to **Settings** -> **Language Model** to add a custom AI service provider.
+
+![Settings Navigation](img/settings.png)
+
+### Step 2: Add Custom AI Provider
+
+Click the `+` button to add a new provider and configure it as follows:
+
+![Add AI Provider](img/AI-provider.png)
+
+| Field | Value | Description |
+| :--- | :--- | :--- |
+| **Provider ID** | `miromind` | Or any identifier you prefer. |
+| **Request Format** | `OPENAI` |  |
+| **API Key** | `your-api-key` | Use any string if auth is disabled. |
+| **API Proxy Address** | `http://localhost:61002/v1` | Replace with your actual service address. |
+
+### Step 3: Configure the Model
+
+After adding the provider, go to the model list section for that provider:
+
+1. Add a new model with the ID `mirothinker` (must match `--served-model-name`).
+2. **Crucial**: Enable the **Function Calling** capability toggle.
+3. Click "Check" to verify connectivity.
+
+![Model Configuration](img/model.png)
+
+## 3. Usage Demo
+
+Once configured, you can use MiroThinker in LobeChat with full tool-calling capabilities.
+
+![Presentation Demo](img/presentation.gif)
