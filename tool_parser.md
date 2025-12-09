@@ -8,7 +8,7 @@ The plugin consists of a custom `ToolParser` implementation that detects and par
 
 ## Files
 
-- **`MirothinkerToolParser_vllm_0.11.0.py`**: The Python implementation of the tool parser. It registers the parser name `mirothinker` with vLLM's `ToolParserManager`.
+- **`MirothinkerToolParser.py`**: The Python implementation of the tool parser. It registers the parser name `mirothinker` with vLLM's `ToolParserManager`, [detail](https://docs.vllm.com.cn/en/latest/features/tool_calling/#quickstart).
 - **`chat_template.jinja`**: A Jinja2 chat template that correctly formats the conversation history and injects tool definitions for the model.
 - **`serve_model_vllm.sh`**: An example shell script demonstrating how to launch vLLM with this plugin.
 
@@ -40,7 +40,7 @@ To use this plugin with vLLM, you need to specify the plugin path, the parser na
 
 ### Command Line Arguments
 
-- `--tool-parser-plugin /path/to/MirothinkerToolParser_vllm_0.11.0.py`: Loads the custom parser code.
+- `--tool-parser-plugin /path/to/MirothinkerToolParser.py`: Loads the custom parser code.
 - `--tool-call-parser mirothinker`: Activates the parser registered as `mirothinker`.
 - `--chat-template /path/to/chat_template.jinja`: Uses the provided chat template.
 - `--enable-auto-tool-choice`: Enables automatic tool choice handling.
@@ -56,7 +56,7 @@ vllm serve /path/to/model \
     --port 8000 \
     --trust-remote-code \
     --chat-template ./chat_template.jinja \
-    --tool-parser-plugin ./MirothinkerToolParser_vllm_0.11.0.py \
+    --tool-parser-plugin ./MirothinkerToolParser.py \
     --tool-call-parser mirothinker \
     --enable-auto-tool-choice \
     --max-model-len 32768
@@ -64,5 +64,5 @@ vllm serve /path/to/model \
 
 ## Requirements
 
-- vLLM == 0.11.0
+- vLLM >= 0.11.0
 

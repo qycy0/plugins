@@ -17,7 +17,7 @@ vllm serve $MODEL_PATH \
     --port $PORT \
     --trust-remote-code \
     --chat-template chat_template.jinja \
-    --tool-parser-plugin MirothinkerToolParser_vllm_0.11.0.py \
+    --tool-parser-plugin MirothinkerToolParser.py \
     --tool-call-parser mirothinker \
     --enable-auto-tool-choice
 ```
@@ -60,3 +60,7 @@ After adding the provider, go to the model list section for that provider:
 Once configured, you can use MiroThinker in LobeChat with full tool-calling capabilities.
 
 ![Presentation Demo](img/presentation.gif)
+
+## Requirements
+
+- vLLM >= 0.11.0
